@@ -39,8 +39,6 @@ function show_notification() {
 
 # Start the timer loop
 while true; do
-    # Display the start notification
-    notify-send -e -t 5000 --urgency=critical "Pomodoro Timer: Session $P_COUNT" "Starting $(($session_duration / 60)) minute session"
 
     # Increment the Pomodoro counter
     P_COUNT=$(($P_COUNT + 1))
@@ -56,6 +54,8 @@ while true; do
         P_MODE=""
     fi
 
+    # Display the start notification
+    notify-send -e -t 5000 --urgency=critical "Pomodoro Timer: Session $P_COUNT" "Starting $(($session_duration / 60)) minute session"
     # Start the timer
     remaining_time=$session_duration
     while [[ $remaining_time -gt 0 ]]; do
