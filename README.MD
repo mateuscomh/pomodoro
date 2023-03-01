@@ -32,7 +32,7 @@ Prerequisites
 
 In order to use this script, you will need:
 
-    A Unix-like environment (e.g. Linux or macOS)
+    A Unix-like environment
     A Bash shell
     Basic knowledge of shell scripting
 
