@@ -9,16 +9,16 @@
 # DEPS              : notify-send
 #---------------------------------------------------------------------------|
 
-# Set the duration of each Pomodoro session (in seconds)
+# Duration of each Pomodoro session (in seconds)
 P_DURATION=1500   # 25 minutes
 
-# Set the duration of the short break (in seconds)
+# Duration of the short break (in seconds)
 SHORT_BREAK_DURATION=300  # 5 minutes
 
-# Set the duration of the long break (in seconds)
+# Duration of the long break (in seconds)
 LONG_BREAK_DURATION=900   # 15 minutes
 
-# Set the number of Pomodoro sessions before a long break
+# Number of Pomodoro sessions before a long break
 P_TOTAL=4
 
 # Initialize the Pomodoro counter
@@ -33,10 +33,13 @@ function show_notification() {
 
 # Start the timer loop
 while true; do
+    # Display the start notification
+    notify-send -e -t 5000 --urgency=critical "Pomodoro Timer: Session $P_COUNT" "Starting $(($session_duration / 60)) minute session"
+
     # Increment the Pomodoro counter
     P_COUNT=$(($P_COUNT + 1))
 
-    # Determine the duration of the current session
+    # Duration of the current session
     if [[ $(($P_COUNT % $P_TOTAL)) -eq 0 ]]; then
         session_duration=$LONG_BREAK_DURATION
         P_NOTIFY="critical"
@@ -46,9 +49,6 @@ while true; do
         P_NOTIFY="low"
         P_MODE=""
     fi
-
-    # Display the start notification
-    notify-send -e -t 5000 --urgency=critical "Pomodoro Timer: Session $P_COUNT" "Starting $(($session_duration / 60)) minute session"
 
     # Start the timer
     remaining_time=$session_duration
