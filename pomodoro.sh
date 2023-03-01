@@ -8,6 +8,12 @@
 # SHORT DESC        : Pomodoro notify-send GNU/LINUX
 # DEPS              : notify-send
 #---------------------------------------------------------------------------|
+# check if notify-send command exists
+if ! command -v notify-send &> /dev/null
+then
+    echo "The 'notify-send' command is not installed. Please install it and try again."
+    exit 1
+fi
 
 # Duration of each Pomodoro session (in seconds)
 P_DURATION=1500   # 25 minutes
