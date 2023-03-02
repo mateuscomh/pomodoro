@@ -6,12 +6,12 @@
 # DATE/VER.         : 28/02/2023 1.0
 # LICENCE           : GPL3
 # SHORT DESC        : Pomodoro notify-send GNU/LINUX
-# DEPS              : notify-send
+# DEPS              : notify-send >= 0.7.9
 #---------------------------------------------------------------------------|
 # check if notify-send command exists
 if ! command -v notify-send &> /dev/null
 then
-    echo "The 'notify-send' command is not installed. Please install it and try again."
+    echo "The 'notify-send' ver.>= 0.7.9 command is not installed. Please install it and try again."
     exit 1
 fi
 
