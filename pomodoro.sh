@@ -3,7 +3,7 @@
 #---------------------------------------------------------------------------|
 # AUTOR             : Matheus Martins <3mhenrique@gmail.com>
 # HOMEPAGE          : https://github.com/mateuscomh/pomodoro
-# DATE/VER.         : 28/02/2023 1.0
+# DATE/VER.         : 28/02/2023 1.2
 # LICENCE           : GPL3
 # SHORT DESC        : Pomodoro notify-send GNU/LINUX
 # DEPS              : notify-send >= 0.7.9
@@ -16,13 +16,13 @@ then
 fi
 
 # Duration of each Pomodoro session (in seconds)
-P_DURATION=1500   # 25 minutes
+P_DURATION=15   # 25 minutes
 
 # Duration of the short break (in seconds)
-SHORT_BREAK_DURATION=300  # 5 minutes
+SHORT_BREAK_DURATION=3  # 5 minutes
 
 # Duration of the long break (in seconds)
-LONG_BREAK_DURATION=900   # 15 minutes
+LONG_BREAK_DURATION=9   # 15 minutes
 
 # Number of Pomodoro sessions before a long break
 P_TOTAL=4
@@ -34,7 +34,7 @@ P_COUNT=0
 function show_notification() {
     local remaining_minutes=$(($1 / 60))
     local remaining_seconds=$(($1 % 60))
-    notify-send -t 995 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT" "$(printf "%02d:%02d" $remaining_minutes $remaining_seconds) remaining"
+    notify-send -t 990 -h int:transient:1 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT" "$(printf "%02d:%02d" $remaining_minutes $remaining_seconds) remaining"
 }
 
 # Start the timer loop
@@ -76,4 +76,8 @@ while true; do
             sleep 1
             remaining_time=$(($remaining_time - 1))
         done
+    if [[ $P_COUNT -eq 4 ]]; then
+        notify-send --urgency=critical "ALL $IP_COUNT CICLE POMODORO OVER"
+        exit 0
+    fi
 done
