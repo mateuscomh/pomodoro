@@ -40,8 +40,8 @@ Options:
 
 
   ENABLER + P , Pausa o timer
-  ENABLER + P , Continua o timer
-  ENABLER + P , Sai do Pomodoro
+  ENABLER + C , Continua o timer
+  ENABLER + Q , Sai do Pomodoro
 
 Description:
 A pomodoro timer that alternates work sessions and break sessions.
@@ -58,7 +58,6 @@ function show_notification() {
     local paused=0
 
     trap 'paused=$((1 - paused))' SIGINT
-            notify-send -t 1003 -h int:transient:1 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT" "$(printf "%02d:%02d" $remaining_minutes $remaining_seconds_mod) remaining"
     trap 'exit' SIGTERM
 
     while [ $remaining_seconds -gt 0 ]; do
@@ -72,7 +71,7 @@ function show_notification() {
             read -n 1 -s key
             case $key in
                 p|P)
-                    paused=0
+#                    paused=0
                     ;;
                 c|C)
                     ;;
@@ -84,6 +83,7 @@ function show_notification() {
                     ;;
                 *)
                     echo "Invalid key"
+                    show_help
                     ;;
             esac
         fi
