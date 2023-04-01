@@ -31,11 +31,72 @@ P_TOTAL=4
 P_COUNT=0
 
 # Define a function to display a notification with the remaining time
-function show_notification() {
-    local remaining_minutes=$(($1 / 60))
-    local remaining_seconds=$(($1 % 60))
-    notify-send -t 1003 -h int:transient:1 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT" "$(printf "%02d:%02d" $remaining_minutes $remaining_seconds) remaining"
+function show_help {
+    cat << EOF
+Usage: $0 [OPTIONS]
+
+Options:
+    ENABLER: Control+C  
+
+
+  ENABLER + P , Pausa o timer
+  ENABLER + P , Continua o timer
+  ENABLER + P , Sai do Pomodoro
+
+Description:
+A pomodoro timer that alternates work sessions and break sessions.
+
+EOF
 }
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+  show_help
+  exit 0
+fi
+
+function show_notification() {
+    local remaining_seconds=$1
+    local paused=0
+
+    trap 'paused=$((1 - paused))' SIGINT
+            notify-send -t 1003 -h int:transient:1 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT" "$(printf "%02d:%02d" $remaining_minutes $remaining_seconds_mod) remaining"
+    trap 'exit' SIGTERM
+
+    while [ $remaining_seconds -gt 0 ]; do
+        if [ $paused -eq 0 ]; then
+            local remaining_minutes=$((remaining_seconds / 60))
+            local remaining_seconds_mod=$((remaining_seconds % 60))
+            notify-send -t 1003 -h int:transient:1 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT" "$(printf "%02d:%02d" $remaining_minutes $remaining_seconds_mod) remaining"
+            sleep 1
+            remaining_seconds=$((remaining_seconds - 1))
+        else
+            read -n 1 -s key
+            case $key in
+                p|P)
+                    paused=0
+                    ;;
+                c|C)
+                    ;;
+                q|Q)
+                    echo -e " "
+                    echo -e "bye..."
+                    notify-send -t 3000 -u normal "bye..." 
+                    exit 0
+                    ;;
+                *)
+                    echo "Invalid key"
+                    ;;
+            esac
+        fi
+    done
+
+    trap - SIGINT SIGTERM
+}
+
+# function show_notification() {
+#     local remaining_minutes=$(($1 / 60))
+#     local remaining_seconds=$(($1 % 60))
+#     notify-send -t 1003 -h int:transient:1 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT" "$(printf "%02d:%02d" $remaining_minutes $remaining_seconds) remaining"
+# }
 
 # Start the timer loop
 while true; do
