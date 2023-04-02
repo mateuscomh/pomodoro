@@ -32,13 +32,13 @@ P_COUNT=0
 # Define a function to display a notification with the remaining time
 function show_help {
   cat <<EOF
-Usage: $0 [OPTIONS]
 
-Options:
+Running Options:
 
-  P) Pause Pomodoro timer.
-  C) Continue Pomodoro timer.
-  Q) Exit Pomodoro timer.
+  h) Display help usage.
+  p) Pause Pomodoro timer.
+  c) Continue Pomodoro timer.
+  q) Exit Pomodoro timer.
 
 Description:
 A pomodoro timer that alternates work sessions and break sessions.
@@ -85,11 +85,6 @@ function show_notification() {
     done
 
 }
-# function show_notification() {
-#     local remaining_minutes=$(($1 / 60))
-#     local remaining_seconds=$(($1 % 60))
-#     notify-send -t 1003 -h int:transient:1 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT" "$(printf "%02d:%02d" $remaining_minutes $remaining_seconds) remaining"
-# }
 
 # Start the timer loop
 while true; do
@@ -105,7 +100,6 @@ while true; do
         P_MODE=""
     fi
 
-    # Display the start notification
     notify-send -t 5000 --urgency=critical "Pomodoro Timer: Session $P_COUNT" \
     "Starting $(($session_duration / 60)) minute session"
     # Start the timer
@@ -116,7 +110,6 @@ while true; do
         remaining_time=$(($remaining_time - 1))
     done
 
-    # Display the end notification
     notify-send "Pomodoro Timer" "$(($session_duration / 60)) minute session $(($P_COUNT)) complete"
 
     # Take a short break if necessary
