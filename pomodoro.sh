@@ -52,19 +52,19 @@ fi
 function show_notification() {
     local remaining_minutes=$(($1 / 60))
     local remaining_seconds=$(($1 % 60))
-    notify-send -t 1003 -h int:transient:1 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT" \
+    notify-send -t 1000 -h int:transient:1 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT" \
     \ "$(printf "%02d:%02d" $remaining_minutes $remaining_seconds) remaining"
 }
 
 function play_pause() {
-    read -n 1 -s -t 0.01 key
+    read -n 1 -s -t 0.0001 key
     case $key in
     [Pp])
         paused=true
         notify-send "Pomodoro Paused"
         while $paused; do
             show_notification $remaining_time
-            read -n 1 -s -t 0.01 key
+            read -n 1 -s -t 0.0001 key
             case $key in
             [Cc])
                 paused=false
@@ -76,7 +76,7 @@ function play_pause() {
                 exit 0
                 ;;
             esac
-            sleep 1
+            sleep 1 
         done
         ;;
     [Qq])
@@ -85,7 +85,7 @@ function play_pause() {
         exit 0
         ;;
     esac
-    sleep 1
+    sleep 0.99
 }
 
 function main_timer() {
