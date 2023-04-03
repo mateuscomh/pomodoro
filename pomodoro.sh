@@ -96,20 +96,47 @@ function main_timer() {
     done
 }
 
+function wait_key {
+  # Exibe uma mensagem na tela
+  echo "Press 'C' to continue or 'Ctrl+C' to interrupt Session: $P_COUNT $P_MODE"
+  notify-send --urgency=critical "Press 'C' to continue or 'Ctrl+C' to interrupt \
+  Session: $P_COUNT $P_MODE"
+    
+  trap 'echo "Script interrupted by user"; notify-send "Script interrupted by user"; exit 1' INT
+
+  read -n 1 -s -r -p "" input
+  case $input in
+    [cC])
+      echo "Continuing script execution..."
+      ;;
+    [qQ])
+      echo "Exiting script..."
+      notify-send "Script terminated by user"
+      exit 0
+      ;;
+    *)
+      # Call the function again if the user input is invalid
+      wait_key
+      ;;
+  esac
+}
+
+
 # Start the timer loop
 while true; do
     P_COUNT=$(($P_COUNT + 1))
     # Duration of the current session
     session_duration=$P_DURATION
     P_NOTIFY="low"
-    P_MODE=""
+    P_MODE="Work Mode"
 
-    notify-send -t 5000 --urgency=critical "Pomodoro Timer: Session $P_COUNT" \
-        "Starting $(($session_duration / 60)) minute session"
+    notify-send -t 5000 --urgency=critical "Pomodoro Timer: Session $P_COUNT"\
+"Starting $(($session_duration / 60)) minute session"
     # Start the timer
     remaining_time=$session_duration
     paused=false
     main_timer
+    wait_key
 
     if [[ $(($P_COUNT % $P_TOTAL)) -eq 0 ]]; then
         remaining_time=$LONG_BREAK_DURATION
@@ -130,6 +157,7 @@ while true; do
         P_MODE="Short Break"
     fi
     main_timer
+    wait_key
     if [[ $P_COUNT -eq $P_TOTAL ]]; then
         notify-send --urgency=critical "ALL $P_COUNT CICLE POMODORO OVER"
         exit 0
