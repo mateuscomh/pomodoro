@@ -3,7 +3,7 @@
 #---------------------------------------------------------------------------|
 # AUTOR             : Matheus Martins <3mhenrique@gmail.com>
 # HOMEPAGE          : https://github.com/mateuscomh/pomodoro
-# DATE/VER.         : 28/02/2023 2.0
+# DATE/VER.         : 28/02/2023 2.1
 # LICENCE           : GPL3
 # SHORT DESC        : Pomodoro notify-send GNU/LINUX
 # DEPS              : notify-send >= 0.7.9
@@ -53,7 +53,7 @@ function show_notification() {
     local remaining_minutes=$(($1 / 60))
     local remaining_seconds=$(($1 % 60))
     notify-send -t 1000 -h int:transient:1 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT" \
-    \ "$(printf "%02d:%02d" $remaining_minutes $remaining_seconds) remaining"
+        \ "$(printf "%02d:%02d" $remaining_minutes $remaining_seconds) remaining"
 }
 
 function play_pause() {
@@ -76,11 +76,11 @@ function play_pause() {
                 exit 0
                 ;;
             esac
-            sleep 1 
+            sleep 1
         done
         ;;
     [Qq])
-        notify-send --urgency=critical "Pomodoro Quit" 
+        notify-send --urgency=critical "Pomodoro Quit"
         echo "bye.."
         exit 0
         ;;
@@ -97,30 +97,29 @@ function main_timer() {
 }
 
 function wait_key {
-  # Exibe uma mensagem na tela
-  echo "Press 'C' to continue or 'Ctrl+C' to interrupt Session: $P_COUNT $P_MODE"
-  notify-send --urgency=critical "Press 'C' to continue or 'Ctrl+C' to interrupt \
+    # Exibe uma mensagem na tela
+    echo "Press 'C' to continue or 'Ctrl+C' to interrupt Session: $P_COUNT $P_MODE"
+    notify-send --urgency=critical "Press 'C' to continue or 'Ctrl+C' to interrupt \
   Session: $P_COUNT $P_MODE"
-    
-  trap 'echo "Script interrupted by user"; notify-send "Script interrupted by user"; exit 1' INT
 
-  read -n 1 -s -r -p "" input
-  case $input in
+    trap 'echo "Script interrupted by user"; notify-send "Script interrupted by user"; exit 1' INT
+
+    read -n 1 -s -r -p "" input
+    case $input in
     [cC])
-      echo "Continuing script execution..."
-      ;;
+        echo "Continuing script execution..."
+        ;;
     [qQ])
-      echo "Exiting script..."
-      notify-send "Script terminated by user"
-      exit 0
-      ;;
+        echo "Exiting script..."
+        notify-send "Script terminated by user"
+        exit 0
+        ;;
     *)
-      # Call the function again if the user input is invalid
-      wait_key
-      ;;
-  esac
+        # Call the function again if the user input is invalid
+        wait_key
+        ;;
+    esac
 }
-
 
 # Start the timer loop
 while true; do
@@ -130,8 +129,8 @@ while true; do
     P_NOTIFY="low"
     P_MODE="Work Mode"
 
-    notify-send -t 5000 --urgency=critical "Pomodoro Timer: Session $P_COUNT"\
-"Starting $(($session_duration / 60)) minute session"
+    notify-send -t 5000 --urgency=critical "Pomodoro Timer: Session $P_COUNT""\
+Starting $(($session_duration / 60)) minute session"
     # Start the timer
     remaining_time=$session_duration
     paused=false
