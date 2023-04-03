@@ -52,7 +52,7 @@ fi
 function show_notification() {
     local remaining_minutes=$(($1 / 60))
     local remaining_seconds=$(($1 % 60))
-    notify-send -t 1000 -h int:transient:1 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT" \
+    notify-send -t 995 -h int:transient:1 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT" \
         \ "$(printf "%02d:%02d" $remaining_minutes $remaining_seconds) remaining"
 }
 
@@ -115,7 +115,6 @@ function wait_key {
         exit 0
         ;;
     *)
-        # Call the function again if the user input is invalid
         wait_key
         ;;
     esac
@@ -129,7 +128,7 @@ while true; do
     P_NOTIFY="low"
     P_MODE="Work Mode"
 
-    notify-send -t 5000 --urgency=critical "Pomodoro Timer: Session $P_COUNT""\
+    notify-send -t 5000 --urgency=critical "Pomodoro Timer: Session $P_COUNT. ""\
 Starting $(($session_duration / 60)) minute session"
     # Start the timer
     remaining_time=$session_duration
