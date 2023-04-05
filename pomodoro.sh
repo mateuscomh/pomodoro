@@ -78,6 +78,9 @@ function play_pause() {
         echo "bye.."
         exit 0
         ;;
+   [Hh?])
+        show_help
+        ;;
     esac
     sleep 0.99
 }
