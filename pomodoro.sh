@@ -32,7 +32,6 @@ P_COUNT=0
 # Define a function to display a notification with the remaining time
 function show_help {
     cat <<EOF
-
 Running Options:
 
   h) Display help usage.
@@ -52,7 +51,7 @@ fi
 function show_notification() {
     local remaining_minutes=$(($1 / 60))
     local remaining_seconds=$(($1 % 60))
-    notify-send -t 995 -h int:transient:1 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT" \
+    notify-send -t 990 -h int:transient:1 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT" \
         \ "$(printf "%02d:%02d" $remaining_minutes $remaining_seconds) remaining"
 }
 
@@ -89,6 +88,7 @@ function play_pause() {
 }
 
 function main_timer() {
+    trap 'echo "Script interrupted by user"; notify-send "Script interrupted by user"; exit 1' INT
     while [[ $remaining_time -gt 0 ]]; do
         show_notification $remaining_time
         play_pause
@@ -97,12 +97,11 @@ function main_timer() {
 }
 
 function wait_key {
-    # Exibe uma mensagem na tela
-    echo "Press 'C' to continue or 'Ctrl+C' to interrupt Session: $P_COUNT $P_MODE"
-    notify-send --urgency=critical "Press 'C' to continue or 'Ctrl+C' to interrupt \
-  Session: $P_COUNT $P_MODE"
-
     trap 'echo "Script interrupted by user"; notify-send "Script interrupted by user"; exit 1' INT
+
+    echo "Press 'C' to continue or 'Q' to interrupt Session: $P_COUNT $P_MODE"
+    notify-send --urgency=critical "Press 'C' to continue or 'Q' to interrupt \
+  Session: $P_COUNT $P_MODE"
 
     read -n 1 -s -r -p "" input
     case $input in
@@ -120,17 +119,16 @@ function wait_key {
     esac
 }
 
-# Start the timer loop
+# Main 
 while true; do
     P_COUNT=$(($P_COUNT + 1))
-    # Duration of the current session
     session_duration=$P_DURATION
     P_NOTIFY="low"
     P_MODE="Work Mode"
 
-    notify-send -t 5000 --urgency=critical "Pomodoro Timer: Session $P_COUNT. ""\
+    notify-send -t 5000 --urgency=critical "Pomodoro Timer: Session $P_COUNT ""\
 Starting $(($session_duration / 60)) minute session"
-    # Start the timer
+
     remaining_time=$session_duration
     paused=false
     main_timer
@@ -148,7 +146,6 @@ Starting $(($session_duration / 60)) minute session"
     fi
     notify-send "Pomodoro Timer" "$(($session_duration / 60)) minute session $(($P_COUNT)) complete"
 
-    # Take a short break if necessary
     if [[ "$P_COUNT" != "$P_TOTAL" ]]; then
         remaining_time=$SHORT_BREAK_DURATION
         P_NOTIFY="normal"
