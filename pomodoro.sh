@@ -46,7 +46,7 @@ EOF
 function show_notification() {
     local remaining_minutes=$(($1 / 60))
     local remaining_seconds=$(($1 % 60))
-    notify-send -t 990 -h int:transient:1 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT" \
+    notify-send -t 1005 -h int:transient:1 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT" \
         \ "$(printf "%02d:%02d" $remaining_minutes $remaining_seconds) remaining"
 }
 
@@ -104,7 +104,8 @@ function wait_key {
     read -n 1 -s -r -p "" input
     case $input in
     [cC])
-        echo "Continuing Pomodoro cicle execution..."
+        echo "Continuing Pomodoro cycle execution..."
+        notify-send "Continuing Pomodoro cycle execution"
         ;;
     [qQ])
         echo "Exiting Pomodoro..."
