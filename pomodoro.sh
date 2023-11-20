@@ -36,8 +36,9 @@ function show_help {
 Running Options:
 
   h) Display help usage.
-  p) Pause Pomodoro timer.
+  p) Pause/continue Pomodoro timer.
   c) Continue Pomodoro timer.
+  s) Skip current session
   q) Exit Pomodoro timer.
 
 Description:
@@ -47,24 +48,26 @@ Here used a notify-send on GNU/Linux to keep look on timer always
 ┏┓        ┓      
 ┃┃┏┓┏┳┓┏┓┏┫┏┓┏┓┏┓
 ┣┛┗┛┛┗┗┗┛┗┻┗┛┛ ┗┛
-                 
 
 EOF
 }
+
 show_help
+
 function show_notification() {
   local remaining_minutes=$(($1 / 60))
   local remaining_seconds=$(($1 % 60))
-  notify-send -t 997 -h int:transient:1 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT" \
+  notify-send -t 1005 -h int:transient:1 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT/$P_TOTAL" \
     \ "$(printf "%02d:%02d" $remaining_minutes $remaining_seconds) remaining"
 }
 
 function play_pause() {
-  read -n 1 -s -t 0.0001 key
+  read -s -n 1 -t 0.0001 key
   case $key in
   [Pp])
     paused=true
     notify-send --urgency=critical -t 5000 "Pomodoro Paused"
+    P_NOTIFY="critical"
     while $paused; do
       show_notification $remaining_time
       read -n 1 -s -t 0.0001 key
@@ -72,6 +75,7 @@ function play_pause() {
       [CcPp])
         paused=false
         notify-send "Pomodoro Resumed"
+        P_NOTIFY="low"
         ;;
       [Qq])
         notify-send --urgency=critical -t 5000 "Pomodoro Quit"
@@ -82,16 +86,20 @@ function play_pause() {
       sleep 1
     done
     ;;
+  [Ss])
+    notify-send --urgency=critical -t 1999 "Skiped session $P_COUNT/$P_TOTAL $P_MODE"
+    remaining_time=0
+    ;;
   [Qq])
     notify-send --urgency=critical -t 5000 "Pomodoro Quit"
     echo "bye.."
     exit 0
     ;;
-  [Hh?])
+  [Hh?*])
     show_help
     ;;
   esac
-  sleep 0.99
+  sleep 1
 }
 
 function main_timer() {
@@ -105,9 +113,9 @@ function main_timer() {
 
 function wait_key {
   trap 'echo "Pomodoro interrupted by user"; notify-send "Pomodoro interrupted by user"; exit 1' INT
-  echo "Press 'C' to continue or 'Q' to interrupt Session: $P_COUNT $P_MODE"
+  echo "Press 'C' to continue or 'Q' to interrupt Session: $P_COUNT/$P_TOTAL $P_MODE"
   notify-send --urgency=critical "Press 'C' to continue or 'Q' to interrupt \
-  Session: $P_COUNT $P_MODE"
+  Session: $P_COUNT/$P_TOTAL $P_MODE"
   read -n 1 -s -r -p "" input
   case $input in
   [cC])
@@ -141,7 +149,7 @@ while true; do
   main_timer
   wait_key
 
-  notify-send -t 5000 --urgency=critical "Pomodoro Timer: Session $P_COUNT ""\
+  notify-send -t 5000 --urgency=critical "Pomodoro Timer: Session $P_COUNT/$P_TOTAL ""\
 Starting $(($session_duration / 60)) minute session"
 
   if [[ $(($P_COUNT % $P_TOTAL)) -eq 0 ]]; then
@@ -167,7 +175,7 @@ Starting $(($session_duration / 60)) minute session"
   wait_key
 
   if [[ $P_COUNT -eq $P_TOTAL ]]; then
-    notify-send --urgency=critical "ALL $P_COUNT CICLE POMODORO OVER"
+    notify-send --urgency=critical "ALL $P_COUNT/$P_TOTAL CICLE POMODORO OVER"
     exit 0
   fi
 done
