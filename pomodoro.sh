@@ -32,7 +32,6 @@ P_COUNT=0
 function show_help {
   cat <<EOF
                                                                                         
-
 Running Options:
 
   h) Display help usage.
@@ -57,12 +56,12 @@ show_help
 function show_notification() {
   local remaining_minutes=$(($1 / 60))
   local remaining_seconds=$(($1 % 60))
-  notify-send -t 1005 -h int:transient:1 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT/$P_TOTAL" \
+  notify-send -t 1006 -h int:transient:1 --urgency=$P_NOTIFY "$P_MODE Pomodoro Timer: Session $P_COUNT/$P_TOTAL" \
     \ "$(printf "%02d:%02d" $remaining_minutes $remaining_seconds) remaining"
 }
 
 function play_pause() {
-  read -s -n 1 -t 0.0001 key
+  read -r -s -n 1 -t 0.0001 key
   case $key in
   [Pp])
     paused=true
@@ -70,7 +69,7 @@ function play_pause() {
     P_NOTIFY="critical"
     while $paused; do
       show_notification $remaining_time
-      read -n 1 -s -t 0.0001 key
+      read -r -n 1 -s -t 0.0001 key
       case $key in
       [CcPp])
         paused=false
@@ -116,7 +115,7 @@ function wait_key {
   echo "Press 'C' to continue or 'Q' to interrupt Session: $P_COUNT/$P_TOTAL $P_MODE"
   notify-send --urgency=critical "Press 'C' to continue or 'Q' to interrupt \
   Session: $P_COUNT/$P_TOTAL $P_MODE"
-  read -n 1 -s -r -p "" input
+  read -r -n 1 -s -r -p "" input
   case $input in
   [cC])
     echo "Continuing Pomodoro cycle execution..."
