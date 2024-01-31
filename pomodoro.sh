@@ -31,7 +31,7 @@ P_COUNT=0
 #PRINT ASCII ART
 function show_help {
   cat <<EOF
-                                                                                        
+
 Running Options:
 
   h) Display help usage.
@@ -44,7 +44,7 @@ Description:
 A pomodoro timer that alternates work sessions and break sessions.
 Here used a notify-send on GNU/Linux to keep look on timer always
 
-┏┓        ┓      
+┏┓        ┓
 ┃┃┏┓┏┳┓┏┓┏┫┏┓┏┓┏┓
 ┣┛┗┛┛┗┗┗┛┗┻┗┛┛ ┗┛
 
