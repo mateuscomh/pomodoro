@@ -5,7 +5,8 @@
  |  __/| (_) || | | | | || (_) || (_| || (_) || |  | (_) |
  |_|    \___/ |_| |_| |_| \___/  \__,_| \___/ |_|   \___/ 
   
- ``` 
+ ```
+![2023-02-28_23-25_1](https://user-images.githubusercontent.com/60662558/222029339-3495e625-7c5c-4ff2-96f9-6aaf443bc3f5.png) 
 ---
 # Introduction
 
@@ -75,7 +76,5 @@ Thank you for using our script!
 This is my pomodoro timer was created for GNU/Linux and using notify-send 
 
 This shell script will track time using the Pomodoro technique.
-
-![2023-02-28_23-25_1](https://user-images.githubusercontent.com/60662558/222029339-3495e625-7c5c-4ff2-96f9-6aaf443bc3f5.png)
 
 #### It is a prerequisite to have the notify-send package installed in the distribution.
