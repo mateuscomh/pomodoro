@@ -148,7 +148,7 @@ function play_pause() {
 	[Pp])
 		paused=true
 		notify-send -r "$NOTIFY_ID" --urgency=critical -t 5000 "Pomodoro Paused"
-    xautolock -enable && notify-send -u critical -t 4000 'Bloqueio Ativo'
+    xautolock -enable && notify-send -u critical -t 4000 'Bloqueio Ativo ' 2>/dev/null
 		P_NOTIFY="critical"
 		while $paused; do
 			show_notification "$remaining_time"
@@ -157,12 +157,12 @@ function play_pause() {
 			[CcPp])
 				paused=false
 				notify-send -r "$NOTIFY_ID" -t 3000 "Pomodoro Resumed"
-        xautolock -disable && notify-send -u low -t 4000 'Bloqueio Suspenso'
+        xautolock -disable && notify-send -u low -t 4000 'Bloqueio Suspenso ' 2>/dev/null
 				P_NOTIFY="low"
 				;;
 			[Qq])
 				notify-send -r "$NOTIFY_ID" -t 3000 --urgency=critical "Pomodoro Quit"
-        xautolock -enable && notify-send -u critical -t 4000 'Bloqueio Ativo'
+        xautolock -enable && notify-send -u critical -t 4000 'Bloqueio Ativo ' 2>/dev/null
 				echo "bye.."
 				exit 0
 				;;
@@ -176,7 +176,7 @@ function play_pause() {
 		;;
 	[Qq])
 		notify-send -r "$NOTIFY_ID" --urgency=critical -t 5000 "Pomodoro Quit"
-    xautolock -enable && notify-send -u critical -t 4000 'Bloqueio Ativo'
+    xautolock -enable && notify-send -u critical -t 4000 'Bloqueio Ativo ' 2>/dev/null
 		echo "bye.."
 		exit 0
 		;;
@@ -188,8 +188,8 @@ function play_pause() {
 }
 
 function main_timer() {
-	trap 'echo "Pomodoro interrupted by user"; notify-send -r "$NOTIFY_ID" "Pomodoro interrupted by user"; exit 1' INT
-  xautolock -disable && notify-send -u low -t 4000 'Bloqueio Suspenso'
+	trap 'echo "Pomodoro interrupted by user"; xautolock -disable && notify-send -u low -t 4000 "Bloqueio Suspenso" 2>/dev/null; notify-send -r "$NOTIFY_ID" "Pomodoro interrupted by user"; exit 1' INT
+  
 	while [[ $remaining_time -gt 0 ]]; do
 		show_notification "$remaining_time"
 		play_pause
@@ -271,5 +271,5 @@ done
 notify-send -r "$NOTIFY_ID" --urgency=critical -t 0 "ALL POMODORO  $P_TOTAL CICLE HAS BEEN FINISHED!"
 notify-send -r "$NOTIFY_ID" -t 3000 --urgency=low "Cicle Finished. Well Done!!"
 echo "All Pomodo Cicle Finished! Well done!!!"
-xautolock -enable && notify-send -u critical -t 4000 'Bloqueio Ativo'
+xautolock -enable && notify-send -u critical -t 4000 'Bloqueio Ativo ' 2>/dev/null
 exit 0
