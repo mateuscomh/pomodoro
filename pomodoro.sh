@@ -30,7 +30,6 @@ P_COUNT=1
 
 NOTIFY_ID="$BASHPID"
 # ------------------------------------------------------------------------------
-
 read_int_default_minutes() {
   local prompt="$1"
   local default_min="$2"
@@ -149,6 +148,7 @@ function play_pause() {
 	[Pp])
 		paused=true
 		notify-send -r "$NOTIFY_ID" --urgency=critical -t 5000 "Pomodoro Paused"
+    xautolock -enable && notify-send -u critical -t 4000 'Bloqueio Ativo'
 		P_NOTIFY="critical"
 		while $paused; do
 			show_notification "$remaining_time"
@@ -157,10 +157,12 @@ function play_pause() {
 			[CcPp])
 				paused=false
 				notify-send -r "$NOTIFY_ID" -t 3000 "Pomodoro Resumed"
+        xautolock -disable && notify-send -u low -t 4000 'Bloqueio Suspenso'
 				P_NOTIFY="low"
 				;;
 			[Qq])
 				notify-send -r "$NOTIFY_ID" -t 3000 --urgency=critical "Pomodoro Quit"
+        xautolock -enable && notify-send -u critical -t 4000 'Bloqueio Ativo'
 				echo "bye.."
 				exit 0
 				;;
@@ -174,6 +176,7 @@ function play_pause() {
 		;;
 	[Qq])
 		notify-send -r "$NOTIFY_ID" --urgency=critical -t 5000 "Pomodoro Quit"
+    xautolock -enable && notify-send -u critical -t 4000 'Bloqueio Ativo'
 		echo "bye.."
 		exit 0
 		;;
@@ -186,6 +189,7 @@ function play_pause() {
 
 function main_timer() {
 	trap 'echo "Pomodoro interrupted by user"; notify-send -r "$NOTIFY_ID" "Pomodoro interrupted by user"; exit 1' INT
+  xautolock -disable && notify-send -u low -t 4000 'Bloqueio Suspenso'
 	while [[ $remaining_time -gt 0 ]]; do
 		show_notification "$remaining_time"
 		play_pause
@@ -267,4 +271,5 @@ done
 notify-send -r "$NOTIFY_ID" --urgency=critical -t 0 "ALL POMODORO  $P_TOTAL CICLE HAS BEEN FINISHED!"
 notify-send -r "$NOTIFY_ID" -t 3000 --urgency=low "Cicle Finished. Well Done!!"
 echo "All Pomodo Cicle Finished! Well done!!!"
+xautolock -enable && notify-send -u critical -t 4000 'Bloqueio Ativo'
 exit 0
